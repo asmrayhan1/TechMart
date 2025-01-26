@@ -45,18 +45,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       backgroundColor: const Color(0xfff2f6fb),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
+          padding: const EdgeInsets.only(left: 20, right: 20, top: 50),
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 69, right: 56, top: 67),
+                padding: const EdgeInsets.only(left: 69, right: 56, top: 90),
                 child: CustomImage(
-                  height: 250,
+                  height: 280,
                   width: 250,
                   imagePath: ImagePath.logo,
                 ),
               ),
-              const SizedBox(height: 70.59),
+              const SizedBox(height: 40.59),
               SizedBox(height: 63,
                 child: CustomTextField(
                     hintText: "Email", onSubmittedValue: _onEmail, borderColor: (!isEmail && home.isEmail)? Colors.red : Colors.white60, context: context, iconUrl: ImagePath.email
