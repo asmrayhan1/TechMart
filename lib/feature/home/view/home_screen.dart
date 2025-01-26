@@ -98,9 +98,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               SizedBox(height: 8),
                               Row(
                                 children: [
-                                  CustomContainer(txt: "200 Taka", containerColor: Colors.orange, containerWidth: 80, containerHeight: 35),
+                                  CustomContainer(txt: "200 Taka", fntSize: 14, fntWeight: FontWeight.w500, containerColor: Colors.orange, containerWidth: 80, containerHeight: 35),
                                   SizedBox(width: h / 15),
-                                  CustomContainer(txt: "30% Off", containerColor: Colors.orange, containerWidth: 80, containerHeight: 35),
+                                  CustomContainer(txt: "30% Off", fntSize: 14, fntWeight: FontWeight.w500, containerColor: Colors.orange, containerWidth: 80, containerHeight: 35),
                                 ],
                               ),
                               SizedBox(height: 10)
