@@ -33,7 +33,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF2F6FB),
+      backgroundColor: Colors.white,//Color(0xFFF2F6FB),
       body: RefreshIndicator(
           onRefresh: _refreshData, backgroundColor: Color(0xFFF2F6FB),
           child: _widgetOptions.elementAt(_selectedIndex)

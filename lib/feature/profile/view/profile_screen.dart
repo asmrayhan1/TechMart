@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tech_mart/shared/popup_menu/custom_change_image.dart';
+import 'package:tech_mart/shared/popup_menu/custom_edit_info.dart';
 
 import '../../../core/extensions/image_path.dart';
 import '../../../shared/containers/custom_image.dart';
@@ -16,7 +17,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -124,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontSize: 16, fontWeight: FontWeight.w800)),
                         GestureDetector(
                           onTap: () {},
-                          child: CustomLogout(),
+                          child: CustomEditInfo(),
                         ),
                       ],
                     ),

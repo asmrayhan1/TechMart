@@ -11,4 +11,5 @@ class ImagePath {
   static String more = "assets/images/icon/more.png";
   static String cancel = "assets/images/icon/cancel.png";
   static String change = "assets/images/icon/change.png";
+  static String edit = "assets/images/icon/edit.png";
 }

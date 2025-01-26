@@ -35,7 +35,7 @@ class _CustomLogoutState extends State<CustomLogout> {
                 SizedBox(height: 13),
                 Row(
                   children: [
-                    Icon(Icons.logout_outlined, color: Color(0xff17a38f), size: 22),
+                    Icon(Icons.logout_outlined, color: Color(0xff188273), size: 22),
                     SizedBox(width: 8),
                     Text("Logout", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
                   ],
