@@ -6,9 +6,10 @@ import '../../../shared/containers/custom_image.dart';
 class CustomField extends StatefulWidget {
   final int maxLine;
   final TextEditingController controller;  // Pass the controller from parent
+  final BuildContext context;
   final String hintTxt;
-  final Function(String) onSubmittedValue;
-  const CustomField({super.key, required this.maxLine, required this.controller, required this.hintTxt, required this.onSubmittedValue});
+  final Function(String, BuildContext) onSubmittedValue;
+  const CustomField({super.key, required this.maxLine, required this.controller, required this.context, required this.hintTxt, required this.onSubmittedValue});
 
   @override
   State<CustomField> createState() => _CustomFieldState();
@@ -23,7 +24,7 @@ class _CustomFieldState extends State<CustomField> {
     _focusNode.addListener(() {
       setState(() {});
       if (!_focusNode.hasFocus) {
-        widget.onSubmittedValue(widget.controller.text.trim());
+        widget.onSubmittedValue(widget.controller.text.trim(), widget.context);
       }
       if (kDebugMode) {
         print("Password Working");

@@ -41,4 +41,82 @@ class Validation {
       return true;
     }
   }
+
+  static bool bioValidity({required String? bio, required BuildContext context}){
+    if (bio == null || bio.isEmpty || bio.length < 6 || bio.length > 25){
+      Toast.showToast(context: context, message: "Bio length should be between 6-25 characters!", isWarning: true);
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  static bool brandValidity({required String? brand, required BuildContext context}){
+    if (brand == null || brand.length < 2 || brand.length > 10){
+      Toast.showToast(context: context, message: "Brand length should be between 2-10 characters!", isWarning: true);
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  static bool itemValidity({required String? item, required BuildContext context}){
+    if (item == null || item.isEmpty || item.length < 4 || item.length > 15){
+      Toast.showToast(context: context, message: "Item length should be between 4-15 characters!", isWarning: true);
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  static bool descriptionValidity({required String? description, required BuildContext context}){
+    if (description == null || description.isEmpty || description.length < 10 || description.length > 1000){
+      Toast.showToast(context: context, message: "Description length should be between 10-1000 characters!", isWarning: true);
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  static bool priceValidity({required String? price, required BuildContext context}){
+    bool isOkay = true;
+    String num = "0123456789";
+    for (int i = 0; i < price!.length; i++){
+      bool okay = false;
+      for (int j = 0; j < 10; j++){
+        if (price[i] == num[j]) okay = true;
+      }
+      if (!okay){
+        isOkay = false;
+        break;
+      }
+    }
+    if (!isOkay || price.length < 2 || price.length > 8){
+      Toast.showToast(context: context, message: "Invalid Price!", isWarning: true);
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  static bool discountValidity({required String? discount, required BuildContext context}){
+    bool isOkay = true;
+    String num = "0123456789";
+    for (int i = 0; i < discount!.length; i++){
+      bool okay = false;
+      for (int j = 0; j < 10; j++){
+        if (discount[i] == num[j]) okay = true;
+      }
+      if (!okay){
+        isOkay = false;
+        break;
+      }
+    }
+    if (!isOkay || discount.isEmpty || discount.length > 2){
+      Toast.showToast(context: context, message: "Invalid Discount!", isWarning: true);
+      return false;
+    } else {
+      return true;
+    }
+  }
 }

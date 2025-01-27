@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:tech_mart/core/validation/validation.dart';
 
 import '../../../core/extensions/image_path.dart';
 import '../../../shared/buttons/custom_text_button.dart';
 import '../../../shared/containers/custom_container.dart';
 import '../../../shared/containers/custom_image.dart';
-import '../../../shared/text_field/custom_text_field.dart';
+import '../../../shared/widget/utils/toast.dart';
 import '../../profile/components/custom_field.dart';
 
 class AddProduct extends StatefulWidget {
@@ -19,6 +19,7 @@ class AddProduct extends StatefulWidget {
 
 class _AddProductState extends State<AddProduct> {
   String _brand = "", _item = "", _description = "", _price = "", _discount = "";
+  bool isBrand = false, isItem = false, isDescription = false, isPrice = false, isDiscount = false;
   List<String> category = ["Laptop", "Pc", "Phone", "Tv", "Watch", "Headphone", "Gadget"];
   List<bool> isSelected = [false, false, false, false, false, false, false];
   final TextEditingController _brandController = TextEditingController();
@@ -27,35 +28,41 @@ class _AddProductState extends State<AddProduct> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _discountController = TextEditingController();
 
-  void _onBrand(String name){
+  void _onBrand(String brand, BuildContext context){
     setState(() {
-      _brand = name;
+      _brand = brand;
+      isBrand = Validation.brandValidity(brand: brand, context: context);
     });
   }
-  void _onItem(String item){
+  void _onItem(String item, BuildContext context){
     setState(() {
       _item = item;
+      isItem = Validation.itemValidity(item: item, context: context);
     });
   }
-  void _onDescription(String description){
+  void _onDescription(String description, BuildContext context){
     setState(() {
       _description = description;
+      isDescription = Validation.descriptionValidity(description: description, context: context);
     });
   }
-  void _onPrice(String price){
+  void _onPrice(String price, BuildContext context){
     setState(() {
       _price = price;
+      isPrice = Validation.priceValidity(price: price, context: context);
     });
   }
-  void _onDiscount(String discount){
+  void _onDiscount(String discount, BuildContext context){
     setState(() {
       _discount = discount;
+      isDiscount = Validation.discountValidity(discount: discount, context: context);
     });
   }
 
   void _resetForm() {
     setState(() {
       _brand = _item = _description = _price = _discount = "";
+      isBrand = isItem = isDescription = isPrice = isDiscount = false;
       isSelected = [false, false, false, false, false, false, false];
       _brandController.clear() ;_itemController.clear(); _descriptionController.clear(); _priceController.clear(); _discountController.clear();
     });
@@ -120,23 +127,23 @@ class _AddProductState extends State<AddProduct> {
               SizedBox(height: 20),
               Text(" Brand", style: TextStyle(color: Color(0xff101828), fontSize: 16, fontWeight: FontWeight.w600)),
               SizedBox(height: 5),
-              SizedBox(height: 50, child: CustomField(maxLine: 1, controller: _brandController, hintTxt: "Brand", onSubmittedValue: _onBrand)),
+              SizedBox(height: 50, child: CustomField(maxLine: 1, controller: _brandController, context: context, hintTxt: "Brand", onSubmittedValue: _onBrand)),
               SizedBox(height: 20),
               Text(" Item Name", style: TextStyle(color: Color(0xff101828), fontSize: 16, fontWeight: FontWeight.w600)),
               SizedBox(height: 5),
-              SizedBox(height: 50, child: CustomField(maxLine: 1, controller: _itemController, hintTxt: "Item Name", onSubmittedValue: _onItem)),
+              SizedBox(height: 50, child: CustomField(maxLine: 1, controller: _itemController, context: context, hintTxt: "Item Name", onSubmittedValue: _onItem)),
               SizedBox(height: 20),
               Text(" Description", style: TextStyle(color: Color(0xff101828), fontSize: 16, fontWeight: FontWeight.w600)),
               SizedBox(height: 5),
-              CustomField(maxLine: 10, controller: _descriptionController, hintTxt: "Description", onSubmittedValue: _onDescription),
+              CustomField(maxLine: 10, controller: _descriptionController, context: context, hintTxt: "Description", onSubmittedValue: _onDescription),
               SizedBox(height: 20),
               Text(" Price", style: TextStyle(color: Color(0xff101828), fontSize: 16, fontWeight: FontWeight.w600)),
               SizedBox(height: 5),
-              SizedBox(height: 50, child: CustomField(maxLine: 1, controller: _priceController, hintTxt: "Price", onSubmittedValue: _onPrice)),
+              SizedBox(height: 50, child: CustomField(maxLine: 1, controller: _priceController, context: context, hintTxt: "Price", onSubmittedValue: _onPrice)),
               SizedBox(height: 20),
               Text(" Discount", style: TextStyle(color: Color(0xff101828), fontSize: 16, fontWeight: FontWeight.w600)),
               SizedBox(height: 5),
-              SizedBox(height: 50, child: CustomField(maxLine: 1, controller: _discountController, hintTxt: "Discount", onSubmittedValue: _onDiscount)),
+              SizedBox(height: 50, child: CustomField(maxLine: 1, controller: _discountController, context: context, hintTxt: "Discount", onSubmittedValue: _onDiscount)),
               SizedBox(height: 50),
               Center(
                 child: GestureDetector(
@@ -150,7 +157,20 @@ class _AddProductState extends State<AddProduct> {
               Center(
                 child: GestureDetector(
                   onTap: (){
-
+                    if (!isBrand) {
+                      Toast.showToast(context: context, message: "invalid Brand Name!", isWarning: true);
+                    } else if (!isItem){
+                      Toast.showToast(context: context, message: "Invalid Item Name!", isWarning: true);
+                    } else if (!isDescription){
+                      Toast.showToast(context: context, message: "Invalid Description!", isWarning: true);
+                    } else if (!isPrice){
+                      Toast.showToast(context: context, message: "Invalid Price!", isWarning: true);
+                    } else if (!isDiscount){
+                      Toast.showToast(context: context, message: "Invalid Discount!", isWarning: true);
+                    } else {
+                      //
+                      _resetForm();
+                    }
                   },
                   child: CustomContainer(fntWeight: FontWeight.w600, fntSize: 16, txt: "Add Product", containerColor: Color(0xff188273), containerWidth: MediaQuery.of(context).size.width - 40, containerHeight: 50)
                 )

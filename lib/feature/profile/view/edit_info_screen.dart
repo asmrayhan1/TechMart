@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:tech_mart/core/validation/validation.dart';
 import 'package:tech_mart/feature/profile/components/custom_field.dart';
 import 'package:tech_mart/shared/containers/custom_container.dart';
+import 'package:tech_mart/shared/widget/utils/toast.dart';
 
 class EditInfoScreen extends StatefulWidget {
   const EditInfoScreen({super.key});
@@ -15,25 +17,30 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
   final TextEditingController _phoneController = TextEditingController();
 
   String _name = "", _bio = "", _phone = "";
-  void _onName(String name){
+  bool isName = false, isPhone = false, isBio = false;
+  void _onName(String name, BuildContext context){
     setState(() {
       _name = name;
+      isName = Validation.nameValidity(name: name, context: context);
     });
   }
-  void _onBio(String bio){
+  void _onBio(String bio, BuildContext context){
     setState(() {
       _bio = bio;
+      isBio = Validation.bioValidity(bio: bio, context: context);
     });
   }
-  void _onPhone(String phone){
+  void _onPhone(String phone, BuildContext context){
     setState(() {
       _phone = phone;
+      isPhone = Validation.phoneValidity(phone: phone, context: context);
     });
   }
   void _resetForm(){
     setState(() {
       _name = _bio = _phone = "";
-       _nameController.clear(); _bioController.clear(); _phoneController.clear();
+      isName = isBio = isPhone = false;
+      _nameController.clear(); _bioController.clear(); _phoneController.clear();
     });
   }
 
@@ -72,15 +79,15 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
               SizedBox(height: 60),
               Text(" Name", style: TextStyle(color: Color(0xff101828), fontSize: 16, fontWeight: FontWeight.w600)),
               SizedBox(height: 5),
-              CustomField(maxLine: 1, controller: _nameController, hintTxt: "Name", onSubmittedValue: _onName),
+              CustomField(maxLine: 1, controller: _nameController, context: context, hintTxt: "Name", onSubmittedValue: _onName),
               SizedBox(height: 20),
               Text(" Bio", style: TextStyle(color: Color(0xff101828), fontSize: 16, fontWeight: FontWeight.w600)),
               SizedBox(height: 5),
-              CustomField(maxLine: 1, controller: _bioController, hintTxt: "Bio", onSubmittedValue: _onBio),
+              CustomField(maxLine: 1, controller: _bioController, context: context, hintTxt: "Bio", onSubmittedValue: _onBio),
               SizedBox(height: 20),
               Text(" Phone", style: TextStyle(color: Color(0xff101828), fontSize: 16, fontWeight: FontWeight.w600)),
               SizedBox(height: 5),
-              CustomField(maxLine: 1, controller: _phoneController, hintTxt: "Phone", onSubmittedValue: _onPhone),
+              CustomField(maxLine: 1, controller: _phoneController, context: context, hintTxt: "Phone", onSubmittedValue: _onPhone),
               SizedBox(height: 50),
               Center(
                 child: GestureDetector(
@@ -94,7 +101,16 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
               Center(
                   child: GestureDetector(
                       onTap: (){
-                        _resetForm();
+                        if (!isName) {
+                          Toast.showToast(context: context, message: "invalid Name!", isWarning: true);
+                        } else if (!isBio){
+                          Toast.showToast(context: context, message: "Invalid Bio!", isWarning: true);
+                        } else if (!isPhone){
+                          Toast.showToast(context: context, message: "Invalid Phone Number!", isWarning: true);
+                        } else {
+                          //
+                          _resetForm();
+                        }
                       },
                       child: CustomContainer(fntWeight: FontWeight.w600, fntSize: 16, txt: "Save", containerColor: Color(0xff188273), containerWidth: MediaQuery.of(context).size.width - 40, containerHeight: 50)
                   )
