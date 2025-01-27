@@ -9,6 +9,8 @@ List<CategoryModel> categoryList = [
   CategoryModel(title: "Laptop"),
   CategoryModel(title: "Pc"),
   CategoryModel(title: "Phone"),
+  CategoryModel(title: "Tv"),
+  CategoryModel(title: "Watch"),
   CategoryModel(title: "Headphone"),
   CategoryModel(title: "Gadget"),
 ];

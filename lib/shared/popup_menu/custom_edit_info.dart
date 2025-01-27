@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/extensions/image_path.dart';
+import '../../feature/profile/view/edit_info_screen.dart';
 import '../containers/custom_image.dart';
 
 class CustomEditInfo extends StatefulWidget {
@@ -22,6 +23,9 @@ class _CustomEditInfoState extends State<CustomEditInfo> {
         borderRadius: BorderRadius.circular(10),
       ),
       onSelected: (value) {
+        if (value == 1) {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => EditInfoScreen()));
+        }
         if (kDebugMode) {
           print("Selected: $value");
         }

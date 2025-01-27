@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tech_mart/feature/profile/view/edit_info_screen.dart';
 import 'package:tech_mart/shared/popup_menu/custom_change_image.dart';
 import 'package:tech_mart/shared/popup_menu/custom_edit_info.dart';
 
@@ -17,7 +18,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xfff2f4f7), //Colors.white,
+      backgroundColor: Color(0xfff2f4f5), // or 0xfff2f4f7,
       appBar: AppBar(
         backgroundColor: Color(0xffF2F6FB), //Colors.white,
         title: Row(
@@ -33,14 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 15.0),
-            child: GestureDetector(
-              onTap: () {
-                // Navigator.pushReplacement(
-                //     context, MaterialPageRoute(builder: (context)=>LoginScreen())
-                // );
-              },
-              child: CustomChangeImage(),
-            ),
+            child: CustomChangeImage(),
           )
         ],
       ),
@@ -136,10 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Text("title",
                             style: const TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w800)),
-                        GestureDetector(
-                          onTap: () {},
-                          child: CustomEditInfo(),
-                        ),
+                        CustomEditInfo(),
                       ],
                     ),
                     //const SizedBox(height: 10),

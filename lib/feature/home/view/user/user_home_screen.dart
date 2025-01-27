@@ -17,6 +17,7 @@ class UserHomeScreen extends StatefulWidget {
 }
 
 class _UserHomeScreenState extends State<UserHomeScreen> {
+  List<bool> isSelected = [false, false, false, false, false, false, false, false];
   @override
   Widget build(BuildContext context) {
     double h = (MediaQuery.of(context).size.width - 70) / 2;
@@ -61,9 +62,18 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 children: List.generate(categoryList.length, (index) {
                   return GestureDetector(
                     onTap: () {
-                      ///
+                      for (int i = 0; i < categoryList.length; i++){
+                        setState(() {
+                          if (i == index) {
+                            isSelected[i] = !isSelected[i];
+                          } else {
+                            isSelected[i] = false;
+                          }
+                        });
+                      }
                     },
                     child: CustomTextButton(
+                      isSelected: isSelected[index],
                       title: categoryList[index].title,
                     ),
                   );

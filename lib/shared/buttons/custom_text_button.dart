@@ -1,40 +1,39 @@
 import 'package:flutter/material.dart';
 
-class CustomTextButton extends StatelessWidget {
+class CustomTextButton extends StatefulWidget {
+  final bool isSelected;
   final String title;
   const CustomTextButton({
     super.key,
+    required this.isSelected,
     required this.title,
   });
 
   @override
+  State<CustomTextButton> createState() => _CustomTextButtonState();
+}
+
+class _CustomTextButtonState extends State<CustomTextButton> {
+  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8),
-      child: TextButton(
-        style: ButtonStyle(
-          backgroundColor: WidgetStatePropertyAll(
-            (title == "All") ? Colors.black : Colors.white,
-          ),
-          shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-              side: const BorderSide(
-                color: Color(0xFFD0D5DD),
-              ),
-            ),
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        color: widget.isSelected ? Colors.black : Colors.white,
+        borderRadius: BorderRadius.circular(5),
+        border: Border.all(
+          color: const Color(0xFFD0D5DD),
         ),
-        onPressed: () {},
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 5,
-            vertical: 5,
-          ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+        child: Center(
           child: Text(
-            title,
-            style:
-            TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: (title == "All") ? Colors.white : null),
+            widget.title,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: widget.isSelected ? Colors.white : null,
+            ),
           ),
         ),
       ),

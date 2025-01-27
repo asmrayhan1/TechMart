@@ -5,16 +5,16 @@ import '../../../shared/containers/custom_image.dart';
 
 class CustomField extends StatefulWidget {
   final int maxLine;
+  final TextEditingController controller;  // Pass the controller from parent
   final String hintTxt;
   final Function(String) onSubmittedValue;
-  const CustomField({super.key, required this.maxLine, required this.hintTxt, required this.onSubmittedValue});
+  const CustomField({super.key, required this.maxLine, required this.controller, required this.hintTxt, required this.onSubmittedValue});
 
   @override
   State<CustomField> createState() => _CustomFieldState();
 }
 
 class _CustomFieldState extends State<CustomField> {
-  final TextEditingController _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
 
   @override
@@ -23,7 +23,7 @@ class _CustomFieldState extends State<CustomField> {
     _focusNode.addListener(() {
       setState(() {});
       if (!_focusNode.hasFocus) {
-        widget.onSubmittedValue(_textController.text.trim());
+        widget.onSubmittedValue(widget.controller.text.trim());
       }
       if (kDebugMode) {
         print("Password Working");
@@ -40,7 +40,7 @@ class _CustomFieldState extends State<CustomField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: _textController,
+      controller: widget.controller,
       focusNode: _focusNode,
       maxLines: widget.maxLine,
       style: const TextStyle(
@@ -62,7 +62,7 @@ class _CustomFieldState extends State<CustomField> {
           borderSide: BorderSide(color: _focusNode.hasFocus? const Color(0xff188273) : Colors.white60, width: 1.5),
           borderRadius: BorderRadius.circular(10),
         ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 25),
+        contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
       ),
     );
   }

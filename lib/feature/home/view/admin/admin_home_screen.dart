@@ -18,6 +18,7 @@ class AdminHomeScreen extends StatefulWidget {
 }
 
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
+  List<bool> isSelected = [true, false, false, false, false, false, false, false];
 
   void _onProduct(int status){
 
@@ -25,7 +26,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double h = (MediaQuery.of(context).size.width - 20) / 2;
+    double h = (MediaQuery.of(context).size.width - 20);
+    double w = h - h / 2.15;
     return Scaffold(
       backgroundColor: Color(0xfff2f4f7),//Colors.white, // Color(0xffe2e6e6),
       appBar: AppBar(
@@ -51,10 +53,22 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                 children: List.generate(categoryList.length, (index) {
                   return GestureDetector(
                     onTap: () {
-                      ///
+                      for (int i = 0; i < categoryList.length; i++){
+                        setState(() {
+                          if (i == index) {
+                            isSelected[i] = true;
+                          } else {
+                            isSelected[i] = false;
+                          }
+                        });
+                      }
                     },
-                    child: CustomTextButton(
-                      title: categoryList[index].title,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 2),
+                      child: CustomTextButton(
+                        isSelected: isSelected[index],
+                        title: categoryList[index].title,
+                      ),
                     ),
                   );
                 },
@@ -87,16 +101,17 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SizedBox(
-                                    height: h,
-                                    width: h,
-                                    child: Image.network("https://as01.epimg.net/img/especiales/futbol/2022/historias-futbolistas/players/lionel-messi/desktop/fotograma_2.jpg", fit: BoxFit.cover),
+                                  Center(
+                                    child: Container(
+                                      height: h / 2.3,
+                                      width: h / 2.15,
+                                      child: Image.network("https://as01.epimg.net/img/especiales/futbol/2022/historias-futbolistas/players/lionel-messi/desktop/fotograma_2.jpg", fit: BoxFit.cover),
+                                    ),
                                   ),
                                   SizedBox(
-                                    //color: Colors.red,
-                                    width: h,
+                                    width: w,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(left: 8.0, top: 15, right: 5),
+                                      padding: const EdgeInsets.only(left: 8.0, top: 5, right: 5),
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,16 +140,16 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                                 "styled container. It typically has rounded corners and a subtle shadow to give "
                                                 "it a raised appearance.",
 
-                                            style: TextStyle(color: Color(0xFF344054), fontSize: 14, fontWeight: FontWeight.w500),
+                                            style: TextStyle(color: Color(0xFF344054), fontSize: 13, fontWeight: FontWeight.w500),
                                             maxLines: 3, overflow: TextOverflow.ellipsis,
                                           ),
                                           SizedBox(height: 15),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              CustomContainer(txt: "200 Taka", fntSize: 14, fntWeight: FontWeight.w500, containerColor: Colors.black, containerWidth: 100, containerHeight: 30),
+                                              CustomContainer(txt: "200000 Tk", fntSize: 13, fntWeight: FontWeight.w500, containerColor: Colors.black, containerWidth: 110, containerHeight: 30),
                                               //SizedBox(width: h / 15),
-                                              CustomContainer(txt: "30% Off", fntSize: 14, fntWeight: FontWeight.w500, containerColor: Color(0xff17A38F), containerWidth: 70, containerHeight: 30),
+                                              CustomContainer(txt: "30% Off", fntSize: 13, fntWeight: FontWeight.w500, containerColor: Color(0xff17A38F), containerWidth: 65, containerHeight: 30),
                                             ],
                                           ),
                                           SizedBox(height: 10)
