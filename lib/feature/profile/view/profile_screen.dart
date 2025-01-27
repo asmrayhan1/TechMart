@@ -17,12 +17,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xfff2f4f7), //Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xffF2F6FB), //Colors.white,
+        title: Row(
+          children: [
+            CustomImage(
+              height: 30,
+              width: 30,
+              imagePath: ImagePath.app_logo,
+            ),
+            Text("TechMart", style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: Color(0xff188273)),),
+          ],
+        ),
         actions: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+            padding: const EdgeInsets.only(right: 15.0),
             child: GestureDetector(
               onTap: () {
                 // Navigator.pushReplacement(
@@ -37,6 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            SizedBox(height: 20),
             Center(
               child: Column(
                 children: [

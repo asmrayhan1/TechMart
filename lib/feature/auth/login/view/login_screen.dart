@@ -26,7 +26,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void _onEmail(String email, BuildContext context) {
     setState(() {
       _email = email;
-      Validation.emailValidity(email: email, context: context);
+      isEmail = Validation.emailValidity(email: email, context: context);
       ref.read(loginProvider.notifier).updateStatus(isEmail: false, isPassword: ref.watch(loginProvider).isPassword);
     });
   }

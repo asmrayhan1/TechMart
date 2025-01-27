@@ -1,18 +1,18 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/extensions/image_path.dart';
 import '../containers/custom_image.dart';
 
-class CustomChangeImage extends StatefulWidget {
-  const CustomChangeImage({super.key});
+class CustomDelete extends StatefulWidget {
+  final Function(int) status;
+  const CustomDelete({super.key, required this.status});
 
   @override
-  State<CustomChangeImage> createState() => _CustomChangeImageState();
+  State<CustomDelete> createState() => _CustomDeleteState();
 }
 
-class _CustomChangeImageState extends State<CustomChangeImage> {
+class _CustomDeleteState extends State<CustomDelete> {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<int>(
@@ -22,6 +22,7 @@ class _CustomChangeImageState extends State<CustomChangeImage> {
         borderRadius: BorderRadius.circular(10),
       ),
       onSelected: (value) {
+        widget.status(value);
         if (kDebugMode) {
           print("Selected: $value");
         }
@@ -35,25 +36,25 @@ class _CustomChangeImageState extends State<CustomChangeImage> {
                 const SizedBox(height: 13),
                 Row(
                   children: [
-                    CustomImage(height: 22, width: 22, imagePath: ImagePath.change),
+                    CustomImage(height: 22, width: 22, imagePath: ImagePath.edit),
                     const SizedBox(width: 8),
-                    const Text("Change Image", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
+                    const Text("Edit", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
                   ],
                 ),
               ],
             ),
           ),
-          const PopupMenuItem<int>(
+          PopupMenuItem<int>(
             value: 2,
             child: Column(
               children: [
-                Divider(color: Color(0xffe1e4ea)),
-                SizedBox(height: 6),
+                const Divider(color: Color(0xffe1e4ea)),
+                const SizedBox(height: 6),
                 Row(
                   children: [
-                    Icon(Icons.logout_outlined, color: Color(0xff188273), size: 22),
-                    SizedBox(width: 8),
-                    Text("Logout", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
+                    Icon(Icons.delete),
+                    const SizedBox(width: 8),
+                    const Text("Delete", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
                   ],
                 ),
               ],

@@ -80,7 +80,7 @@ class _SignUpState extends ConsumerState<SignupScreen> {
                   imagePath: ImagePath.logo,
                 ),
               ),
-              const SizedBox(height: 40.59),
+              const SizedBox(height: 20.59),
               SizedBox(height: 63, child: CustomTextField(hintText: "Name", borderColor: (!isName && status.isName)? Colors.red : Colors.white60, context: context, onSubmittedValue: _onName, iconUrl: ImagePath.user)),
               const SizedBox(height: 16.74),
               SizedBox(height: 63, child: CustomTextField(hintText: "Phone", borderColor: (!isPhone && status.isPhone)? Colors.red : Colors.white60, context: context, onSubmittedValue: _onPhone, iconUrl: ImagePath.phone)),
