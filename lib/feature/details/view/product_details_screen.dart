@@ -3,6 +3,8 @@ import 'package:tech_mart/shared/containers/custom_container.dart';
 import 'package:tech_mart/shared/containers/custom_image.dart';
 import 'package:tech_mart/shared/containers/custom_rating.dart';
 
+import '../../auth/login/view/login_screen.dart';
+
 class ProductDetailsScreen extends StatefulWidget {
   const ProductDetailsScreen({super.key});
 
@@ -101,7 +103,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               //   ],
               // ),
               SizedBox(height: 50),
-              Center(child: CustomContainer(txt: "Order Now", fntSize: 16, fntWeight: FontWeight.bold, containerColor: Color(0xff188273), containerWidth: w + 10, containerHeight: 50))
+              if (isAdmin != null && isAdmin == false) Center(child: CustomContainer(txt: "Order Now", fntSize: 16, fntWeight: FontWeight.bold, containerColor: Color(0xff188273), containerWidth: w + 10, containerHeight: 50))
             ],
           ),
         ),

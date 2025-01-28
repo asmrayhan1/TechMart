@@ -13,6 +13,8 @@ import '../../../../shared/widget/utils/toast.dart';
 import '../../register/view/signup_screen.dart';
 import '../view_model/controller/login_controller.dart';
 
+bool? isAdmin;
+
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -79,6 +81,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     Toast.showToast(context: context, message: "Invalid Password!", isWarning: true);
                   } else {
                     if (_email == "admin@gmail.com"){
+                      isAdmin = true;
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                           builder: (context) => const AdminDashboard(),
@@ -86,6 +89,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       );
                       Toast.showToast(context: context, message: "Successfully Login");
                     } else if (_email == 'user@gmail.com') {
+                      isAdmin = false;
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                           builder: (context) => const UserDashboard(),
