@@ -21,8 +21,9 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> {
+  int _count = 0;
   String _brand = "", _item = "", _description = "", _price = "", _discount = "";
-  bool isBrand = false, isItem = false, isDescription = false, isPrice = false, isDiscount = false, isImage = false;
+  bool isBrand = false, isItem = false, isDescription = false, isPrice = false, isDiscount = false, isCount = false, isImage = false;
   List<String> category = ["Laptop", "Pc", "Phone", "Tv", "Watch", "Headphone", "Gadget"];
   List<bool> isSelected = [false, false, false, false, false, false, false];
   final TextEditingController _brandController = TextEditingController();
@@ -30,7 +31,16 @@ class _AddProductState extends State<AddProduct> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _discountController = TextEditingController();
+  final TextEditingController _countController = TextEditingController();
 
+
+  void _onCount(String count, BuildContext context){
+    setState(() {
+      bool status = Validation.countValidity(count: count, context: context);
+      isCount = status;
+      if (status) _count = int.parse(count);
+    });
+  }
   void _onBrand(String brand, BuildContext context){
     setState(() {
       _brand = brand;
@@ -86,7 +96,7 @@ class _AddProductState extends State<AddProduct> {
       _brand = _item = _description = _price = _discount = "";
       isBrand = isItem = isDescription = isPrice = isDiscount = false;
       isSelected = [false, false, false, false, false, false, false];
-      _brandController.clear() ;_itemController.clear(); _descriptionController.clear(); _priceController.clear(); _discountController.clear();
+      _brandController.clear() ;_itemController.clear(); _descriptionController.clear(); _priceController.clear(); _discountController.clear(); _countController.clear();
     });
   }
 
@@ -200,6 +210,10 @@ class _AddProductState extends State<AddProduct> {
               SizedBox(height: 5),
               SizedBox(height: 50, child: CustomField(maxLine: 1, controller: _priceController, context: context, hintTxt: "Price", onSubmittedValue: _onPrice)),
               SizedBox(height: 20),
+              Text(" Total available item", style: TextStyle(color: Color(0xff101828), fontSize: 16, fontWeight: FontWeight.w600)),
+              SizedBox(height: 5),
+              SizedBox(height: 50, child: CustomField(maxLine: 1, controller: _countController, context: context, hintTxt: "Total available item", onSubmittedValue: _onCount)),
+              SizedBox(height: 20),
               Text(" Discount", style: TextStyle(color: Color(0xff101828), fontSize: 16, fontWeight: FontWeight.w600)),
               SizedBox(height: 5),
               SizedBox(height: 50, child: CustomField(maxLine: 1, controller: _discountController, context: context, hintTxt: "Discount", onSubmittedValue: _onDiscount)),
@@ -226,6 +240,8 @@ class _AddProductState extends State<AddProduct> {
                       Toast.showToast(context: context, message: "Invalid Description!", isWarning: true);
                     } else if (!isPrice){
                       Toast.showToast(context: context, message: "Invalid Price!", isWarning: true);
+                    } else if (!isCount) {
+                      Toast.showToast(context: context, message: "Invalid Total Count!", isWarning: true);
                     } else if (!isDiscount){
                       Toast.showToast(context: context, message: "Invalid Discount!", isWarning: true);
                     } else {

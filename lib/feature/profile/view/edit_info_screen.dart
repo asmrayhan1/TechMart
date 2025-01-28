@@ -19,9 +19,10 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
 
-  String _name = "", _bio = "", _phone = "";
-  bool isName = false, isPhone = false, isBio = false, isImage = false;
+  String _name = "", _bio = "", _phone = "", _address = "";
+  bool isName = false, isPhone = false, isBio = false, isAddress = false;
   void _onName(String name, BuildContext context){
     setState(() {
       _name = name;
@@ -40,11 +41,17 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
       isPhone = Validation.phoneValidity(phone: phone, context: context);
     });
   }
+  void _onAddress(String address, BuildContext context){
+    setState(() {
+      _address = address;
+      isPhone = Validation.addressValidity(address: address, context: context);
+    });
+  }
   void _resetForm(){
     setState(() {
-      _name = _bio = _phone = "";
-      isName = isBio = isPhone = false;
-      _nameController.clear(); _bioController.clear(); _phoneController.clear();
+      _name = _bio = _phone = _address = "";
+      isName = isBio = isPhone = isAddress = false;
+      _nameController.clear(); _bioController.clear(); _phoneController.clear(); _addressController.clear();
     });
   }
 
@@ -60,8 +67,6 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
-        isImage = true;
-
       });
     }
   }
@@ -145,6 +150,10 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
               Text(" Phone", style: TextStyle(color: Color(0xff101828), fontSize: 16, fontWeight: FontWeight.w600)),
               SizedBox(height: 5),
               CustomField(maxLine: 1, controller: _phoneController, context: context, hintTxt: "Phone", onSubmittedValue: _onPhone),
+              SizedBox(height: 20),
+              Text(" Address", style: TextStyle(color: Color(0xff101828), fontSize: 16, fontWeight: FontWeight.w600)),
+              SizedBox(height: 5),
+              CustomField(maxLine: 1, controller: _addressController, context: context, hintTxt: "Address", onSubmittedValue: _onAddress),
               SizedBox(height: 40),
               Center(
                 child: GestureDetector(
@@ -164,6 +173,8 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
                           Toast.showToast(context: context, message: "Invalid Bio!", isWarning: true);
                         } else if (!isPhone){
                           Toast.showToast(context: context, message: "Invalid Phone Number!", isWarning: true);
+                        } else if (!isAddress){
+                          Toast.showToast(context: context, message: "Invalid Address!", isWarning: true);
                         } else {
                           //
                           _resetForm();

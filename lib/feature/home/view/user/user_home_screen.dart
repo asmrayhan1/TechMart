@@ -20,37 +20,22 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   List<bool> isSelected = [false, false, false, false, false, false, false, false];
   @override
   Widget build(BuildContext context) {
-    double h = (MediaQuery.of(context).size.width - 70) / 2;
+    double h = MediaQuery.of(context).size.width - 20;
+    double w = h - h / 2.15;
     return Scaffold(
       backgroundColor: Color(0xfff2f4f7),//Colors.white, // Color(0xffe2e6e6),
       appBar: AppBar(
-        backgroundColor: Color(0xfff2f4f7),//Colors.white, //Color(0xffe2e6e6),
-        title: Padding(
-          padding: const EdgeInsets.only(left: 20.0),
-          child: Row(
-            children: [
-              CustomImage(
-                height: 30,
-                width: 30,
-                imagePath: ImagePath.app_logo,
-              ),
-              Text("TechMart", style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: Color(0xff188273)),),
-            ],
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-            child: GestureDetector(
-                onTap: (){
-                  // Navigator.pushReplacement(
-                  //     context, MaterialPageRoute(builder: (context)=>LoginScreen())
-                  // );
-                },
-                child: CustomLogout(),
+        backgroundColor: Color(0xffF2F6FB),//Colors.white, //Color(0xffe2e6e6),
+        title: Row(
+          children: [
+            CustomImage(
+              height: 30,
+              width: 30,
+              imagePath: ImagePath.app_logo,
             ),
-          )
-        ],
+            Text("TechMart", style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: Color(0xff188273)),),
+          ],
+        ),
       ),
       body: Column(
         children: [
@@ -72,9 +57,12 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         });
                       }
                     },
-                    child: CustomTextButton(
-                      isSelected: isSelected[index],
-                      title: categoryList[index].title,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 2),
+                      child: CustomTextButton(
+                        isSelected: isSelected[index],
+                        title: categoryList[index].title,
+                      ),
                     ),
                   );
                   },
@@ -104,48 +92,48 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                               borderRadius: BorderRadius.circular(0),  // Rounded corners
                             ),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SizedBox(
-                                  height: h + 20,
-                                  width: h,
+                                  height: h / 2.7,
+                                  width: h / 2.15,
                                   child: Image.network("https://as01.epimg.net/img/especiales/futbol/2022/historias-futbolistas/players/lionel-messi/desktop/fotograma_2.jpg", fit: BoxFit.cover),
                                 ),
-                                SizedBox(width: 15),
                                 SizedBox(
                                   //color: Colors.red,
-                                  width: h + 10,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(height: 10),
-                                      CustomRating(txt: "6"),
-                                      SizedBox(height: 8),
-                                      Text(
-                                        "Argentina Shirt",
-                                        style: TextStyle(color: Color(0xFF344054), fontSize: 18, fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Text(
-                                        "Card is a material design component that can be used to display content within a "
-                                            "styled container. It typically has rounded corners and a subtle shadow to give "
-                                            "it a raised appearance.",
+                                  width: w,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 8.0, right: 5, top: 8),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Argentina Shirt", maxLines: 1,
+                                          style: TextStyle(color: Color(0xFF344054), fontSize: 18, fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(height: 5),
+                                        Text(
+                                          "Card is a material design component that can be used to display content within a "
+                                              "styled container. It typically has rounded corners and a subtle shadow to give "
+                                              "it a raised appearance.",
 
-                                        style: TextStyle(color: Color(0xFF344054), fontSize: 14, fontWeight: FontWeight.w500),
-                                        maxLines: 3, overflow: TextOverflow.ellipsis,
-                                      ),
-                                      SizedBox(height: 8),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          CustomContainer(txt: "200 Taka", fntSize: 14, fntWeight: FontWeight.w500, containerColor: Colors.orange, containerWidth: 80, containerHeight: 35),
-                                          //SizedBox(width: h / 15),
-                                          CustomContainer(txt: "30% Off", fntSize: 14, fntWeight: FontWeight.w500, containerColor: Colors.orange, containerWidth: 80, containerHeight: 35),
-                                        ],
-                                      ),
-                                      SizedBox(height: 10)
-                                    ],
+                                          style: TextStyle(color: Color(0xFF344054), fontSize: 13, fontWeight: FontWeight.w500),
+                                          maxLines: 3, overflow: TextOverflow.ellipsis,
+                                        ),
+                                        SizedBox(height: 8),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            CustomContainer(txt: "2000 Tk", fntSize: 13, fntWeight: FontWeight.w500, containerColor: Colors.black, containerWidth: 110, containerHeight: 30),
+                                            //SizedBox(width: h / 15),
+                                            CustomContainer(txt: "30% Off", fntSize: 13, fntWeight: FontWeight.w500, containerColor: Color(0xff17A38F), containerWidth: 65, containerHeight: 30),
+                                          ],
+                                        ),
+                                        SizedBox(height: 10)
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],

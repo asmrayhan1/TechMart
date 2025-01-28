@@ -168,6 +168,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: Column(
+                        children: [
+                          Text("Address: Bangladesh",
+                              style: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xFF344054))),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),

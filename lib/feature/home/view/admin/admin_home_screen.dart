@@ -20,10 +20,6 @@ class AdminHomeScreen extends StatefulWidget {
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
   List<bool> isSelected = [true, false, false, false, false, false, false, false];
 
-  void _onProduct(int status){
-
-  }
-
   @override
   Widget build(BuildContext context) {
     double h = (MediaQuery.of(context).size.width - 20);
@@ -129,7 +125,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                               Expanded(
                                                 flex: 2,
                                                 child: GestureDetector(
-                                                  child: CustomDelete(status: _onProduct),
+                                                  child: CustomDelete(index: index),
                                                 )
                                               ),
                                             ],

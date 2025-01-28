@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:tech_mart/feature/dashboard/view/admin/admin_dashboard.dart';
+import 'package:tech_mart/feature/dashboard/view/user/user_dashboard.dart';
 import '../../../../core/extensions/image_path.dart';
 import '../../../../core/validation/validation.dart';
 import '../../../../shared/containers/custom_button.dart';
@@ -9,7 +10,6 @@ import '../../../../shared/containers/custom_image.dart';
 import '../../../../shared/text_field/custom_password_field.dart';
 import '../../../../shared/text_field/custom_text_field.dart';
 import '../../../../shared/widget/utils/toast.dart';
-import '../../../dashboard/view/dashboard.dart';
 import '../../register/view/signup_screen.dart';
 import '../view_model/controller/login_controller.dart';
 
@@ -78,12 +78,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   } else if (!isPassword){
                     Toast.showToast(context: context, message: "Invalid Password!", isWarning: true);
                   } else {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => const Dashboard(),
-                      ),
-                    );
-                    Toast.showToast(context: context, message: "Successfully Login");
+                    if (_email == "admin@gmail.com"){
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => const AdminDashboard(),
+                        ),
+                      );
+                      Toast.showToast(context: context, message: "Successfully Login");
+                    } else if (_email == 'user@gmail.com') {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => const UserDashboard(),
+                        ),
+                      );
+                      Toast.showToast(context: context, message: "Successfully Login");
+                    }
                   }
                   if (kDebugMode) {
                     print("Login Button Working, $isEmail $isPassword ");

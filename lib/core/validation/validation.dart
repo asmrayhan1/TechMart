@@ -22,6 +22,15 @@ class Validation {
     }
   }
 
+  static bool addressValidity({required String? address, required BuildContext context}){
+    if (address == null || address.isEmpty || address.length < 10){
+      Toast.showToast(context: context, message: "Invalid Address!", isWarning: true);
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   static bool emailValidity({required String? email, required BuildContext context}){
     final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
     if (email == null || email.isEmpty || !emailRegex.hasMatch(email)){
@@ -119,4 +128,26 @@ class Validation {
       return true;
     }
   }
+
+  static bool countValidity({required String? count, required BuildContext context}){
+    bool isOkay = true;
+    String num = "0123456789";
+    for (int i = 0; i < count!.length; i++){
+      bool okay = false;
+      for (int j = 0; j < 10; j++){
+        if (count[i] == num[j]) okay = true;
+      }
+      if (!okay){
+        isOkay = false;
+        break;
+      }
+    }
+    if (!isOkay || count.isEmpty || count.length > 8){
+      Toast.showToast(context: context, message: "Invalid Total Item!", isWarning: true);
+      return false;
+    } else {
+      return true;
+    }
+  }
+
 }
