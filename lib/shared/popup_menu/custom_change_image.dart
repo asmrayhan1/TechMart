@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:tech_mart/feature/auth/login/view/login_screen.dart';
 
 import '../../core/extensions/image_path.dart';
 import '../containers/custom_image.dart';
@@ -13,6 +17,8 @@ class CustomChangeImage extends StatefulWidget {
 }
 
 class _CustomChangeImageState extends State<CustomChangeImage> {
+  File? _image;
+
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<int>(
@@ -22,6 +28,9 @@ class _CustomChangeImageState extends State<CustomChangeImage> {
         borderRadius: BorderRadius.circular(10),
       ),
       onSelected: (value) {
+        if (value == 1){
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginScreen()));
+        }
         if (kDebugMode) {
           print("Selected: $value");
         }
@@ -35,22 +44,6 @@ class _CustomChangeImageState extends State<CustomChangeImage> {
                 const SizedBox(height: 13),
                 Row(
                   children: [
-                    CustomImage(height: 22, width: 22, imagePath: ImagePath.change),
-                    const SizedBox(width: 8),
-                    const Text("Change Image", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const PopupMenuItem<int>(
-            value: 2,
-            child: Column(
-              children: [
-                Divider(color: Color(0xffe1e4ea)),
-                SizedBox(height: 6),
-                Row(
-                  children: [
                     Icon(Icons.logout_outlined, size: 22),
                     SizedBox(width: 8),
                     Text("Logout", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
@@ -60,7 +53,7 @@ class _CustomChangeImageState extends State<CustomChangeImage> {
             ),
           ),
           PopupMenuItem<int>(
-            value: 3,
+            value: 2,
             child: Column(
               children: [
                 const Divider(color: Color(0xffe1e4ea)),

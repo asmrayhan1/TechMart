@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tech_mart/core/validation/validation.dart';
 
 import '../../../core/extensions/image_path.dart';
@@ -19,7 +22,7 @@ class AddProduct extends StatefulWidget {
 
 class _AddProductState extends State<AddProduct> {
   String _brand = "", _item = "", _description = "", _price = "", _discount = "";
-  bool isBrand = false, isItem = false, isDescription = false, isPrice = false, isDiscount = false;
+  bool isBrand = false, isItem = false, isDescription = false, isPrice = false, isDiscount = false, isImage = false;
   List<String> category = ["Laptop", "Pc", "Phone", "Tv", "Watch", "Headphone", "Gadget"];
   List<bool> isSelected = [false, false, false, false, false, false, false];
   final TextEditingController _brandController = TextEditingController();
@@ -57,6 +60,25 @@ class _AddProductState extends State<AddProduct> {
       _discount = discount;
       isDiscount = Validation.discountValidity(discount: discount, context: context);
     });
+  }
+
+
+  File? _image;
+
+  // Function to pick an image
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+
+    // Pick image from gallery
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+        isImage = true;
+
+      });
+    }
   }
 
   void _resetForm() {
@@ -124,6 +146,43 @@ class _AddProductState extends State<AddProduct> {
                   ),
                 ),
               ),
+              SizedBox(height: 30),
+
+              // Display the picked image in a square container
+              _image == null ? Center(
+                child: Container(
+                  width: 200,
+                  height: 200,
+                  color: Colors.grey[200], // Placeholder when no image is selected
+                  child: Center(child: Text("No Image")),
+                ),
+              ) : Center(
+                child: Container(
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: FileImage(_image!),
+                      fit: BoxFit.cover, // Ensure image covers the square box
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              // Custom Styled Button
+              Center(
+                child: ElevatedButton(
+                  onPressed: _pickImage,
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(Colors.black), // Custom Color
+                    shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8), // Slightly rounded corners
+                    )),
+                    padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 32, vertical: 5)), // Padding for the button
+                  ),
+                  child: Text("Pick Image", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white)),
+                ),
+              ),
               SizedBox(height: 20),
               Text(" Brand", style: TextStyle(color: Color(0xff101828), fontSize: 16, fontWeight: FontWeight.w600)),
               SizedBox(height: 5),
@@ -159,6 +218,8 @@ class _AddProductState extends State<AddProduct> {
                   onTap: (){
                     if (!isBrand) {
                       Toast.showToast(context: context, message: "invalid Brand Name!", isWarning: true);
+                    } else if (!isImage){
+                      Toast.showToast(context: context, message: "No Image Found!", isWarning: true);
                     } else if (!isItem){
                       Toast.showToast(context: context, message: "Invalid Item Name!", isWarning: true);
                     } else if (!isDescription){

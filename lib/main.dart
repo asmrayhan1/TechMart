@@ -7,7 +7,6 @@ import 'package:tech_mart/feature/home/view/admin/admin_home_screen.dart';
 import 'package:tech_mart/feature/home/view/user/user_home_screen.dart';
 import 'package:tech_mart/feature/profile/view/edit_info_screen.dart';
 import 'package:tech_mart/feature/profile/view/profile_screen.dart';
-import 'package:tech_mart/feature/splash/splash_screen.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -20,7 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const LoginScreen(),
+      home: Dashboard(),
     );
   }
 }

@@ -136,7 +136,7 @@ class _SignUpState extends ConsumerState<SignupScreen> {
                           onTap: (){
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
                           },
-                          child: const Text("Log In", style: TextStyle(fontSize: 12.56, fontWeight: FontWeight.bold))
+                          child: const Text("Log In", style: TextStyle(fontSize: 12.56, fontWeight: FontWeight.bold, color: Color(0xff188273)))
                       ),
                     ],
                   ),

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tech_mart/feature/profile/view/edit_info_screen.dart';
 import 'package:tech_mart/shared/popup_menu/custom_change_image.dart';
-import 'package:tech_mart/shared/popup_menu/custom_edit_info.dart';
-
 import '../../../core/extensions/image_path.dart';
 import '../../../shared/containers/custom_image.dart';
-import '../../../shared/popup_menu/custom_logout.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -130,7 +127,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Text("title",
                             style: const TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w800)),
-                        CustomEditInfo(),
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => EditInfoScreen()));
+                          },
+                          child: Icon(Icons.settings)
+                        ),
                       ],
                     ),
                     //const SizedBox(height: 10),

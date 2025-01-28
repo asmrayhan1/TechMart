@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tech_mart/core/validation/validation.dart';
 import 'package:tech_mart/feature/profile/components/custom_field.dart';
 import 'package:tech_mart/shared/containers/custom_container.dart';
@@ -17,7 +21,7 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
   final TextEditingController _phoneController = TextEditingController();
 
   String _name = "", _bio = "", _phone = "";
-  bool isName = false, isPhone = false, isBio = false;
+  bool isName = false, isPhone = false, isBio = false, isImage = false;
   void _onName(String name, BuildContext context){
     setState(() {
       _name = name;
@@ -42,6 +46,24 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
       isName = isBio = isPhone = false;
       _nameController.clear(); _bioController.clear(); _phoneController.clear();
     });
+  }
+
+  File? _image;
+
+  // Function to pick an image
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+
+    // Pick image from gallery
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+        isImage = true;
+
+      });
+    }
   }
 
   @override
@@ -76,7 +98,42 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 60),
+              // Display the picked image in a square container
+              _image == null ? Center(
+                child: Container(
+                  width: 200,
+                  height: 200,
+                  color: Colors.grey[200], // Placeholder when no image is selected
+                  child: Center(child: Text("No Image")),
+                ),
+              ) : Center(
+                child: Container(
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: FileImage(_image!),
+                      fit: BoxFit.cover, // Ensure image covers the square box
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              // Custom Styled Button
+              Center(
+                child: ElevatedButton(
+                  onPressed: _pickImage,
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(Colors.black), // Custom Color
+                    shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8), // Slightly rounded corners
+                    )),
+                    padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 32, vertical: 5)), // Padding for the button
+                  ),
+                  child: Text("Pick Image", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white)),
+                ),
+              ),
+              SizedBox(height: 20),
               Text(" Name", style: TextStyle(color: Color(0xff101828), fontSize: 16, fontWeight: FontWeight.w600)),
               SizedBox(height: 5),
               CustomField(maxLine: 1, controller: _nameController, context: context, hintTxt: "Name", onSubmittedValue: _onName),
@@ -88,13 +145,13 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
               Text(" Phone", style: TextStyle(color: Color(0xff101828), fontSize: 16, fontWeight: FontWeight.w600)),
               SizedBox(height: 5),
               CustomField(maxLine: 1, controller: _phoneController, context: context, hintTxt: "Phone", onSubmittedValue: _onPhone),
-              SizedBox(height: 50),
+              SizedBox(height: 40),
               Center(
                 child: GestureDetector(
                   onTap: (){
                     _resetForm();
                   },
-                  child: CustomContainer(fntWeight: FontWeight.w600, fntSize: 16, txt: "Clear", containerColor: Colors.blueGrey, containerWidth: MediaQuery.of(context).size.width - 40, containerHeight: 50)
+                  child: CustomContainer(fntWeight: FontWeight.w600, fntSize: 16, txt: "Clear", containerColor: Colors.blueGrey, containerWidth: MediaQuery.of(context).size.width - 40, containerHeight: 45)
                 )
               ),
               SizedBox(height: 10),
@@ -112,9 +169,10 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
                           _resetForm();
                         }
                       },
-                      child: CustomContainer(fntWeight: FontWeight.w600, fntSize: 16, txt: "Save", containerColor: Color(0xff188273), containerWidth: MediaQuery.of(context).size.width - 40, containerHeight: 50)
+                      child: CustomContainer(fntWeight: FontWeight.w600, fntSize: 16, txt: "Save", containerColor: Color(0xff188273), containerWidth: MediaQuery.of(context).size.width - 40, containerHeight: 45)
                   )
               ),
+              SizedBox(height: 40),
             ],
           ),
         ),
