@@ -1,4 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tech_mart/feature/shop/view_model/sell_controller.dart';
 
 import '../../../../core/extensions/image_path.dart';
 import '../../../../shared/buttons/custom_text_button.dart';
@@ -6,17 +9,31 @@ import '../../../../shared/containers/custom_image.dart';
 import '../../../../shared/model/category_model.dart';
 import 'custom_user_cart.dart';
 
-class UserShopScreen extends StatefulWidget {
+class UserShopScreen extends ConsumerStatefulWidget {
   const UserShopScreen({super.key});
 
   @override
-  State<UserShopScreen> createState() => _UserShopScreenState();
+  ConsumerState<UserShopScreen> createState() => _UserShopScreenState();
 }
 
-class _UserShopScreenState extends State<UserShopScreen> {
+class _UserShopScreenState extends ConsumerState<UserShopScreen> {
   List<bool> isSelected = [true, false, false, false, false, false, false, false];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((t) {
+      ref.read(sellProvider.notifier).sellInitialize();
+      if (kDebugMode) {
+        print("Len = ${ref.watch(sellProvider).sells!.length}");
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final sell = ref.watch(sellProvider);
     return Scaffold(
       backgroundColor: Color(0xfff2f4f5),
       appBar: AppBar(
@@ -67,20 +84,27 @@ class _UserShopScreenState extends State<UserShopScreen> {
               ),
             ),
             const SizedBox(height: 10),
-            Center(child: CustomUserCart(index: 0, status: true, title: "System Testing", description: "description sdfsdf sdfdsfdsf  sdfsdf sf sdfsdf sdfsddsf", borderColor: Colors.green)),
             const SizedBox(height: 10),
-            Center(child: CustomUserCart(index: 1, status: true, title: "System Testing", description: "description sdfsdf sdfdsfdsf  sdfsdf sf sdfsdf sdfsddsf", borderColor: Colors.green)),
-            const SizedBox(height: 10),
-            Center(child: CustomUserCart(index: 2, status: true, title: "System Testing", description: "description sdfsdf sdfdsfdsf  sdfsdf sf sdfsdf sdfsddsf", borderColor: Colors.green)),
-            const SizedBox(height: 10),
-            Center(child: CustomUserCart(index: 3, status: true, title: "System Testing", description: "description sdfsdf sdfdsfdsf  sdfsdf sf sdfsdf sdfsddsf", borderColor: Colors.green)),
-            const SizedBox(height: 10),
-            Center(child: CustomUserCart(index: 4, status: true, title: "System Testing", description: "description sdfsdf sdfdsfdsf  sdfsdf sf sdfsdf sdfsddsf", borderColor: Colors.green)),
-            const SizedBox(height: 10),
-            Center(child: CustomUserCart(index: 5, status: true, title: "System Testing", description: "description sdfsdf sdfdsfdsf  sdfsdf sf sdfsdf sdfsddsf", borderColor: Colors.green)),
-            const SizedBox(height: 10),
-            Center(child: CustomUserCart(index: 6, status: true, title: "System Testing", description: "description sdfsdf sdfdsfdsf  sdfsdf sf sdfsdf sdfsddsf", borderColor: Colors.green)),
-
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: sell.sells?.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    Column(
+                      children: [
+                        Center(
+                          child: CustomUserCart(index: index, borderColor: Colors.green),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                );
+              }
+            ),
           ],
         ),
       ),

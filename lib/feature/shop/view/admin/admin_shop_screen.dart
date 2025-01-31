@@ -1,24 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tech_mart/feature/shop/view/admin/custom_admin_cart.dart';
 import 'package:tech_mart/feature/shop/view/user/custom_user_cart.dart';
+import 'package:tech_mart/feature/shop/view_model/sell_controller.dart';
 
 import '../../../../core/extensions/image_path.dart';
 import '../../../../shared/buttons/custom_text_button.dart';
 import '../../../../shared/containers/custom_image.dart';
 import '../../../../shared/model/category_model.dart';
 
-class AdminShopScreen extends StatefulWidget {
+class AdminShopScreen extends ConsumerStatefulWidget {
   const AdminShopScreen({super.key});
 
   @override
-  State<AdminShopScreen> createState() => _AdminShopScreenState();
+  ConsumerState<AdminShopScreen> createState() => _AdminShopScreenState();
 }
 
-class _AdminShopScreenState extends State<AdminShopScreen> {
+class _AdminShopScreenState extends ConsumerState<AdminShopScreen> {
   List<bool> isSelected = [true, false, false, false, false, false, false, false];
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((t) {
+      ref.read(sellProvider.notifier).sellInitialize();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final sell = ref.watch(sellProvider);
     return Scaffold(
       backgroundColor: Color(0xfff2f4f5),
       appBar: AppBar(
@@ -69,22 +81,23 @@ class _AdminShopScreenState extends State<AdminShopScreen> {
               ),
             ),
             const SizedBox(height: 10),
-            Center(child: CustomAdminCart(index: 0, status: true, title: "System Testing", description: "description sdfsdf sdfdsfdsf  sdfsdf sf sdfsdf sdfsddsf", borderColor: Colors.green)),
-            const SizedBox(height: 10),
-            Center(child: CustomAdminCart(index: 1, status: true, title: "System Testing", description: "description sdfsdf sdfdsfdsf  sdfsdf sf sdfsdf sdfsddsf", borderColor: Colors.green)),
-            const SizedBox(height: 10),
-            Center(child: CustomAdminCart(index: 2, status: true, title: "System Testing", description: "description sdfsdf sdfdsfdsf  sdfsdf sf sdfsdf sdfsddsf", borderColor: Colors.green)),
-            const SizedBox(height: 10),
-            Center(child: CustomAdminCart(index: 3, status: true, title: "System Testing", description: "description sdfsdf sdfdsfdsf  sdfsdf sf sdfsdf sdfsddsf", borderColor: Colors.green)),
-            const SizedBox(height: 10),
-            Center(child: CustomAdminCart(index: 4, status: true, title: "System Testing", description: "description sdfsdf sdfdsfdsf  sdfsdf sf sdfsdf sdfsddsf", borderColor: Colors.green)),
-            const SizedBox(height: 10),
-            Center(child: CustomAdminCart(index: 5, status: true, title: "System Testing", description: "description sdfsdf sdfdsfdsf  sdfsdf sf sdfsdf sdfsddsf", borderColor: Colors.green)),
-            const SizedBox(height: 10),
-            Center(child: CustomAdminCart(index: 6, status: true, title: "System Testing", description: "description sdfsdf sdfdsfdsf  sdfsdf sf sdfsdf sdfsddsf", borderColor: Colors.green)),
-            const SizedBox(height: 10),
-            Center(child: CustomAdminCart(index: 7, status: true, title: "System Testing", description: "description sdfsdf sdfdsfdsf  sdfsdf sf sdfsdf sdfsddsf", borderColor: Colors.green)),
-            const SizedBox(height: 10),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: sell.sells?.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    Center(
+                      child: CustomAdminCart(
+                        index: index, borderColor: Colors.green
+                      )
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                );
+              }
+            ),
           ],
         ),
       ),

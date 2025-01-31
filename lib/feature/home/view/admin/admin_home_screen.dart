@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tech_mart/feature/auth/register/view/signup_screen.dart';
+import 'package:tech_mart/feature/product/view_model/product_controller.dart';
+import 'package:tech_mart/feature/profile/view_model/user_controller.dart';
 import 'package:tech_mart/shared/popup_menu/custom_delete.dart';
 
 import '../../../../core/extensions/image_path.dart';
@@ -10,20 +14,31 @@ import '../../../../shared/model/category_model.dart';
 import '../../../../shared/popup_menu/custom_logout.dart';
 import '../../../details/view/product_details_screen.dart';
 
-class AdminHomeScreen extends StatefulWidget {
+class AdminHomeScreen extends ConsumerStatefulWidget {
   const AdminHomeScreen({super.key});
 
   @override
-  State<AdminHomeScreen> createState() => _AdminHomeScreenState();
+  ConsumerState<AdminHomeScreen> createState() => _AdminHomeScreenState();
 }
 
-class _AdminHomeScreenState extends State<AdminHomeScreen> {
+class _AdminHomeScreenState extends ConsumerState<AdminHomeScreen> {
   List<bool> isSelected = [true, false, false, false, false, false, false, false];
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((t) async {
+      await ref.read(userProvider.notifier).insertUser(email: insertEmail, name: insertName, phone: insertPhone);
+      await ref.read(productProvider.notifier).productInitialize();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final product = ref.watch(productProvider).products;
     double h = (MediaQuery.of(context).size.width - 20);
-    double w = h - h / 2.15;
+    double w = h - h / 2.3;
     return Scaffold(
       backgroundColor: Color(0xfff2f4f7),//Colors.white, // Color(0xffe2e6e6),
       appBar: AppBar(
@@ -82,11 +97,11 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                     ListView.builder(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        itemCount: 30,
+                        itemCount: product?.length,
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsScreen()));
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsScreen(index: index)));
                             },
                             child: Card(
                               color: Colors.white,
@@ -98,16 +113,16 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Center(
-                                    child: Container(
-                                      height: h / 2.3,
-                                      width: h / 2.15,
-                                      child: Image.network("https://as01.epimg.net/img/especiales/futbol/2022/historias-futbolistas/players/lionel-messi/desktop/fotograma_2.jpg", fit: BoxFit.cover),
+                                    child: SizedBox(
+                                      height: h / 2.1,
+                                      width: h / 2.3,
+                                      child: Image.network("https://dkcsxccdmdunftexgdkc.supabase.co/storage/v1/object/public/${product?[index].image}", fit: BoxFit.cover),
                                     ),
                                   ),
                                   SizedBox(
                                     width: w,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(left: 8.0, top: 5, right: 5),
+                                      padding: const EdgeInsets.only(left: 2.0, top: 5, right: 5),
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,8 +133,11 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                               Expanded(
                                                 flex: 9,
                                                 child: Text(
-                                                  "Argentina Shirt ddfsfsfsdfsdfsdfsfssdfsfasfsadfsdfsdfsfdsfsfsfsdfsdf", maxLines: 1,
-                                                  style: TextStyle(color: Color(0xFF344054), fontSize: 18, fontWeight: FontWeight.bold),
+                                                  product![index].itemName, maxLines: 1,
+                                                  style: TextStyle(
+                                                    color: Color(0xFF344054), fontSize: 18, fontWeight: FontWeight.bold,
+                                                    decoration: (product[index].totalCount == 0) ? TextDecoration.lineThrough : TextDecoration.none,
+                                                  ),
                                                 ),
                                               ),
                                               Expanded(
@@ -132,10 +150,10 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                           ),
                                           SizedBox(height: 5),
                                           Text(
-                                            "Card is a material design component that can be used to display content within a "
-                                                "styled container. It typically has rounded corners and a subtle shadow to give "
-                                                "it a raised appearance.",
-
+                                            // "Card is a material design component that can be used to display content within a "
+                                            //     "styled container. It typically has rounded corners and a subtle shadow to give "
+                                            //     "it a raised appearance.",
+                                            product[index].description,
                                             style: TextStyle(color: Color(0xFF344054), fontSize: 13, fontWeight: FontWeight.w500),
                                             maxLines: 3, overflow: TextOverflow.ellipsis,
                                           ),
@@ -143,9 +161,9 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              CustomContainer(txt: "200000 Tk", fntSize: 13, fntWeight: FontWeight.w500, containerColor: Colors.black, containerWidth: 110, containerHeight: 30),
+                                              CustomContainer(txt: "${product[index].price} Tk", fntSize: 13, fntWeight: FontWeight.w500, containerColor: Colors.black, containerWidth: 110, containerHeight: 30),
                                               //SizedBox(width: h / 15),
-                                              CustomContainer(txt: "30% Off", fntSize: 13, fntWeight: FontWeight.w500, containerColor: Color(0xff17A38F), containerWidth: 65, containerHeight: 30),
+                                              CustomContainer(txt: "${product[index].discount}% Off", fntSize: 13, fntWeight: FontWeight.w500, containerColor: Color(0xff17A38F), containerWidth: 65, containerHeight: 30),
                                             ],
                                           ),
                                           SizedBox(height: 10)

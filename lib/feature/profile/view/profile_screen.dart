@@ -1,19 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tech_mart/feature/profile/view/edit_info_screen.dart';
 import 'package:tech_mart/shared/popup_menu/custom_change_image.dart';
 import '../../../core/extensions/image_path.dart';
 import '../../../shared/containers/custom_image.dart';
+import '../view_model/user_controller.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((t) {
+      ref.read(userProvider.notifier).userInitialize();
+    });
+  }
   @override
   Widget build(BuildContext context) {
+    final user = ref.watch(userProvider).users;
+    final status = ref.watch(userProvider);
+
     return Scaffold(
       backgroundColor: Color(0xfff2f4f5), // or 0xfff2f4f7,
       appBar: AppBar(
@@ -35,35 +48,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
           )
         ],
       ),
-      body: SingleChildScrollView(
+      body: user == null? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
         child: Column(
           children: [
             SizedBox(height: 20),
             Center(
               child: Column(
                 children: [
-                  CircleAvatar(
+                  user.imgUrl!.isEmpty ? Container(
+                    width: 200,
+                    height: 200,
+                    color: Colors.grey[200], // Placeholder when no image is selected
+                    child: Center(child: Text("No Image")),
+                    ) : CircleAvatar(
                     radius: 57.5,
                     child: ClipOval(
                       child: Image.network(
                         fit: BoxFit.cover,
-                        height: 115,
-                        width: 115,
-                        "https://as01.epimg.net/img/especiales/futbol/2022/historias-futbolistas/players/lionel-messi/desktop/fotograma_2.jpg",
+                        height: 130,
+                        width: 135,
+                        "https://dkcsxccdmdunftexgdkc.supabase.co/storage/v1/object/public/${user.imgUrl}",
                       ),
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text(
-                    "Musaddek Ali",
+                  Text(
+                    "${user.name}",
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w700,
                       color: Color(0xFF101828),
                     ),
                   ),
-                  const Text(
-                    "Senior front end Developer",
+                  Text(
+                    "${user.bio}",
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
@@ -82,7 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: const Color(0xFF188273),
                 ),
               ),
-              child: const Padding(
+              child: Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: 23,
                   vertical: 9,
@@ -93,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Icon(Icons.calendar_month),
                     SizedBox(width: 12),
                     Text(
-                      "See Musaddek's Calender",
+                      "See ${user.name}'s Calender",
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -124,7 +142,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("title",
+                        Text("${user.name}", maxLines: 2,
                             style: const TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w800)),
                         GestureDetector(
@@ -140,7 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       padding: const EdgeInsets.only(right: 10.0),
                       child: Column(
                         children: [
-                          Text("description",
+                          Text("${user.bio}", maxLines: 3,
                               style: const TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xFF344054))),
                         ],
@@ -151,7 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       padding: const EdgeInsets.only(right: 10.0),
                       child: Column(
                         children: [
-                          Text("Phone: 01312345678",
+                          Text("Phone: ${user.phone}", maxLines: 2,
                               style: const TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xFF344054))),
                         ],
@@ -162,7 +180,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       padding: const EdgeInsets.only(right: 10.0),
                       child: Column(
                         children: [
-                          Text("Email: abcd@gmail.com",
+                          Text("Email: ${user.email}", maxLines: 2,
                               style: const TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xFF344054))),
                         ],
@@ -173,7 +191,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       padding: const EdgeInsets.only(right: 10.0),
                       child: Column(
                         children: [
-                          Text("Address: Bangladesh",
+                          Text("Address: ${user.address}",
                               style: const TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xFF344054))),
                         ],

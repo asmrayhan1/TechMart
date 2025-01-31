@@ -1,11 +1,10 @@
 import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tech_mart/core/validation/validation.dart';
-
+import 'package:tech_mart/feature/product/view_model/product_controller.dart';
 import '../../../core/extensions/image_path.dart';
 import '../../../shared/buttons/custom_text_button.dart';
 import '../../../shared/containers/custom_container.dart';
@@ -13,15 +12,15 @@ import '../../../shared/containers/custom_image.dart';
 import '../../../shared/widget/utils/toast.dart';
 import '../../profile/components/custom_field.dart';
 
-class AddProduct extends StatefulWidget {
+class AddProduct extends ConsumerStatefulWidget {
   const AddProduct({super.key});
 
   @override
-  State<AddProduct> createState() => _AddProductState();
+  ConsumerState<AddProduct> createState() => _AddProductState();
 }
 
-class _AddProductState extends State<AddProduct> {
-  int _count = 0;
+class _AddProductState extends ConsumerState<AddProduct> {
+  int _count = 0, _isIndex = -1;
   String _brand = "", _item = "", _description = "", _price = "", _discount = "";
   bool isBrand = false, isItem = false, isDescription = false, isPrice = false, isDiscount = false, isCount = false, isImage = false;
   List<String> category = ["Laptop", "Pc", "Phone", "Tv", "Watch", "Headphone", "Gadget"];
@@ -86,13 +85,13 @@ class _AddProductState extends State<AddProduct> {
       setState(() {
         _image = File(pickedFile.path);
         isImage = true;
-
       });
     }
   }
 
   void _resetForm() {
     setState(() {
+      _count = 0; _isIndex = -1;
       _brand = _item = _description = _price = _discount = "";
       isBrand = isItem = isDescription = isPrice = isDiscount = false;
       isSelected = [false, false, false, false, false, false, false];
@@ -102,6 +101,7 @@ class _AddProductState extends State<AddProduct> {
 
   @override
   Widget build(BuildContext context) {
+    final status = ref.watch(productProvider);
     return Scaffold(
       backgroundColor: Color(0xfff2f4f5),
       appBar: AppBar(
@@ -134,6 +134,7 @@ class _AddProductState extends State<AddProduct> {
                         for (int i = 0; i < category.length; i++){
                           setState(() {
                             if (i == index) {
+                              _isIndex = i;
                               isSelected[i] = true;
                             } else {
                               isSelected[i] = false;
@@ -229,8 +230,10 @@ class _AddProductState extends State<AddProduct> {
               SizedBox(height: 10),
               Center(
                 child: GestureDetector(
-                  onTap: (){
-                    if (!isBrand) {
+                  onTap: () async {
+                    if (_isIndex == -1){
+                      Toast.showToast(context: context, message: "Please select a category!", isWarning: true);
+                    } else if (!isBrand) {
                       Toast.showToast(context: context, message: "invalid Brand Name!", isWarning: true);
                     } else if (!isImage){
                       Toast.showToast(context: context, message: "No Image Found!", isWarning: true);
@@ -245,11 +248,16 @@ class _AddProductState extends State<AddProduct> {
                     } else if (!isDiscount){
                       Toast.showToast(context: context, message: "Invalid Discount!", isWarning: true);
                     } else {
-                      //
-                      _resetForm();
+                      bool isInserted = await ref.read(productProvider.notifier).insertProduct(category: category[_isIndex], brand: _brand, itemName: _item, imgFile: _image, description: _description, price: int.parse(_price), totalCount: _count, discount: int.parse(_discount));
+                      if (isInserted){
+                        Toast.showToast(context: context, message: "Product Successfully Added!");
+                        _resetForm();
+                      } else {
+                        Toast.showToast(context: context, message: "Server Error, Try again later!", isWarning: true);
+                      }
                     }
                   },
-                  child: CustomContainer(fntWeight: FontWeight.w600, fntSize: 16, txt: "Add Product", containerColor: Color(0xff188273), containerWidth: MediaQuery.of(context).size.width - 40, containerHeight: 50)
+                  child: CustomContainer(status: status.isLoading? true : false, fntWeight: FontWeight.w600, fntSize: 16, txt: "Add Product", containerColor: Color(0xff188273), containerWidth: MediaQuery.of(context).size.width - 40, containerHeight: 50)
                 )
               ),
               SizedBox(height: 10),

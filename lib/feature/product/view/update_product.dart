@@ -2,28 +2,27 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../../../core/extensions/image_path.dart';
+import 'package:tech_mart/feature/product/view_model/product_controller.dart';
 import '../../../core/validation/validation.dart';
 import '../../../shared/buttons/custom_text_button.dart';
 import '../../../shared/containers/custom_container.dart';
-import '../../../shared/containers/custom_image.dart';
 import '../../../shared/widget/utils/toast.dart';
 import '../../profile/components/custom_field.dart';
 
-class UpdateProduct extends StatefulWidget {
+class UpdateProduct extends ConsumerStatefulWidget {
   final int index;
   const UpdateProduct({super.key, required this.index});
 
   @override
-  State<UpdateProduct> createState() => _UpdateProductState();
+  ConsumerState<UpdateProduct> createState() => _UpdateProductState();
 }
 
-class _UpdateProductState extends State<UpdateProduct> {
-  int _count = 0;
-  String _brand = "", _item = "", _description = "", _price = "", _discount = "";
-  bool isBrand = false, isItem = false, isDescription = false, isPrice = false, isDiscount = false, isCount = false, isImage = false;
+class _UpdateProductState extends ConsumerState<UpdateProduct> {
+  int _count = 0, _index = -1, id = 0;
+  String _brand = "", _item = "", _description = "", _price = "", _discount = "", img = "";
+  bool isBrand = true, isItem = true, isDescription = true, isPrice = true, isDiscount = true, isCount = true, isImage = true;
   List<String> category = ["Laptop", "Pc", "Phone", "Tv", "Watch", "Headphone", "Gadget"];
   List<bool> isSelected = [false, false, false, false, false, false, false];
   final TextEditingController _brandController = TextEditingController();
@@ -31,6 +30,7 @@ class _UpdateProductState extends State<UpdateProduct> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _discountController = TextEditingController();
+  final TextEditingController _countController = TextEditingController();
 
 
   void _onCount(String count, BuildContext context){
@@ -100,6 +100,28 @@ class _UpdateProductState extends State<UpdateProduct> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((t) {
+      final product = ref.watch(productProvider).products?[widget.index];
+      _brand = product!.brand; img = product.image; _item = product.itemName; _description = product.description; _price = product.price.toString(); _discount = product.discount.toString();
+      _brandController.text = product.brand; _itemController.text = product.itemName; _descriptionController.text = product.description; _priceController.text = product.price.toString();
+      _discountController.text = product.discount.toString(); _countController.text = product.totalCount.toString();
+      for (int i = 0; i < category.length; i++){
+        if (product.category == category[i]){
+          setState(() {
+            _index = i;
+          });
+          break;
+        }
+      }
+      id = product.id!;
+      Future.delayed(Duration(milliseconds: 500));
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -142,6 +164,7 @@ class _UpdateProductState extends State<UpdateProduct> {
                           for (int i = 0; i < category.length; i++){
                             setState(() {
                               if (i == index) {
+                                _index = index;
                                 isSelected[i] = true;
                               } else {
                                 isSelected[i] = false;
@@ -166,14 +189,26 @@ class _UpdateProductState extends State<UpdateProduct> {
                 ),
                 SizedBox(height: 30),
 
-                // Display the picked image in a square container
                 _image == null ? Center(
-                  child: Container(
-                    width: 200,
-                    height: 200,
-                    color: Colors.grey[200], // Placeholder when no image is selected
-                    child: Center(child: Text("No Image")),
-                  ),
+                  child: SizedBox(
+                    width: 200.0,
+                    height: 200.0,
+                    child: ClipRRect(
+                      child: Image.network(
+                        "https://dkcsxccdmdunftexgdkc.supabase.co/storage/v1/object/public/$img",
+                        fit: BoxFit.cover,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          } else {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  )
                 ) : Center(
                   child: Container(
                     width: 200,
@@ -228,11 +263,9 @@ class _UpdateProductState extends State<UpdateProduct> {
                 SizedBox(height: 50),
                 Center(
                     child: GestureDetector(
-                        onTap: (){
+                        onTap: () async {
                           if (!isBrand) {
                             Toast.showToast(context: context, message: "invalid Brand Name!", isWarning: true);
-                          } else if (!isImage){
-                            Toast.showToast(context: context, message: "No Image Found!", isWarning: true);
                           } else if (!isItem){
                             Toast.showToast(context: context, message: "Invalid Item Name!", isWarning: true);
                           } else if (!isDescription){
@@ -244,11 +277,18 @@ class _UpdateProductState extends State<UpdateProduct> {
                           } else if (!isDiscount){
                             Toast.showToast(context: context, message: "Invalid Discount!", isWarning: true);
                           } else {
-                            //
-                            _resetForm();
+                            bool isUpdate = await ref.read(productProvider.notifier).updateProduct(
+                                id: id, category: category[_index], brand: _brand, itemName: _item, imgFile: _image, img: img,
+                                description: _description, price: int.parse(_price), totalCount: _count, discount: int.parse(_discount)
+                            );
+                            if (isUpdate){
+                              Toast.showToast(context: context, message: "Updated Successfully");
+                            } else {
+                              Toast.showToast(context: context, message: "Server Error!", isWarning: true);
+                            }
                           }
                         },
-                        child: CustomContainer(fntWeight: FontWeight.w600, fntSize: 16, txt: "Update Product", containerColor: Color(0xff188273), containerWidth: MediaQuery.of(context).size.width - 40, containerHeight: 50)
+                        child:  CustomContainer(status: ref.watch(productProvider).isLoading? true : false, fntWeight: FontWeight.w600, fntSize: 16, txt: "Update Product", containerColor: Color(0xff188273), containerWidth: MediaQuery.of(context).size.width - 40, containerHeight: 50)
                     )
                 ),
                 SizedBox(height: 10),

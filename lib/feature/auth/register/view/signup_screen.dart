@@ -2,15 +2,23 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tech_mart/feature/auth/register/view_model/controller/signup_controller.dart';
+import 'package:tech_mart/feature/profile/view_model/user_controller.dart';
 
 import '../../../../core/extensions/image_path.dart';
+import '../../../../core/service/auth_service.dart';
 import '../../../../core/validation/validation.dart';
 import '../../../../shared/containers/custom_button.dart';
 import '../../../../shared/containers/custom_image.dart';
 import '../../../../shared/text_field/custom_password_field.dart';
 import '../../../../shared/text_field/custom_text_field.dart';
 import '../../../../shared/widget/utils/toast.dart';
+import '../../../dashboard/view/admin/admin_dashboard.dart';
+import '../../../dashboard/view/user/user_dashboard.dart';
 import '../../login/view/login_screen.dart';
+
+String insertName = "";
+String insertPhone = "";
+String insertEmail = "";
 
 class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
@@ -20,6 +28,7 @@ class SignupScreen extends ConsumerStatefulWidget {
 }
 
 class _SignUpState extends ConsumerState<SignupScreen> {
+  final authService = AuthService();
   bool isName = false, isPhone = false, isEmail = false, isPassword = false, isConfirmPassword = false;
   String _name = "", _phone = "", _email = "", _password = "", _confirmPassword = "";
 
@@ -34,6 +43,7 @@ class _SignUpState extends ConsumerState<SignupScreen> {
 
   void _onPhone(String phone, BuildContext context) {
     setState(() {
+      _phone = phone;
       isPhone = Validation.phoneValidity(phone: phone, context:  context);
       late final status = ref.watch(signupProvider);
       ref.read(signupProvider.notifier).updateStatus(isEmail: status.isEmail, isPassword: status.isPassword, isName: status.isName, isConfirmPassword: status.isConfirmPassword, isPhone: false
@@ -42,6 +52,7 @@ class _SignUpState extends ConsumerState<SignupScreen> {
   }
   void _onEmail(String email, BuildContext context) {
     setState(() {
+      _email = email;
       isEmail = Validation.emailValidity(email: email, context: context);
       late final status = ref.watch(signupProvider);
       ref.read(signupProvider.notifier).updateStatus(isEmail: false, isPassword: status.isPassword, isName: status.isName, isConfirmPassword: status.isConfirmPassword, isPhone: status.isPhone);
@@ -49,6 +60,7 @@ class _SignUpState extends ConsumerState<SignupScreen> {
   }
   void _onPassword(String password, BuildContext context) {
     setState(() {
+      _password = password;
       isPassword = Validation.passwordValidity(password: password, context: context);
       late final status = ref.watch(signupProvider);
       ref.read(signupProvider.notifier).updateStatus(isEmail: status.isEmail, isPassword: false, isName: status.isName, isConfirmPassword: status.isConfirmPassword, isPhone: status.isPhone);
@@ -56,6 +68,7 @@ class _SignUpState extends ConsumerState<SignupScreen> {
   }
   void _onConfirmPassword(String password, BuildContext context) {
     setState(() {
+      _confirmPassword = password;
       isConfirmPassword = Validation.passwordValidity(password: password, context: context);
       late final status = ref.watch(signupProvider);
       ref.read(signupProvider.notifier).updateStatus(isEmail: status.isEmail, isPassword: status.isPassword, isName: status.isName, isConfirmPassword: false, isPhone: status.isPhone);
@@ -92,7 +105,7 @@ class _SignUpState extends ConsumerState<SignupScreen> {
               SizedBox(height: 63, child: CustomPasswordField(hintText: "Confirm Password", borderColor: (!isConfirmPassword && status.isConfirmPassword)? Colors.red : Colors.white60, context: context, onSubmittedValue: _onConfirmPassword, iconUrl: ImagePath.lock)),
               const SizedBox(height: 26.73),
               GestureDetector(
-                onTap: () {
+                onTap: () async {
                   ref.read(signupProvider.notifier).updateStatus(isName: true, isConfirmPassword: true, isPhone: true, isEmail: true, isPassword: true);
                   if (!isName){
                     Toast.showToast(context: context, message: "Invalid Name!", isWarning: true);
@@ -107,12 +120,42 @@ class _SignUpState extends ConsumerState<SignupScreen> {
                   } else if (_password != _confirmPassword){
                     Toast.showToast(context: context, message: "Password & Confirmed Password not matched!", isWarning: true);
                   } else {
-                    // Navigator.of(context).pushReplacement(
-                    //   MaterialPageRoute(
-                    //     builder: (context) => const DashboardScreen(),
-                    //   ),
-                    // );
-                    Toast.showToast(context: context, message: "Successfully account created");
+                    try {
+                      await authService.signUpWIthEmailPassword(_email, _password);
+
+                      setState(() {
+                        insertName = _name;
+                        insertPhone = _phone;
+                        insertEmail = _email;
+                      });
+                        Toast.showToast(context: context,
+                            message: "Registered Successfully!");
+                        if (_email == "rc295908@gmail.com") {
+                          isAdmin = true;
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => const AdminDashboard(),
+                            ),
+                          );
+                          Toast.showToast(
+                              context: context, message: "Successfully Login");
+                        } else {
+                          isAdmin = false;
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => const UserDashboard(),
+                            ),
+                          );
+                          Toast.showToast(
+                              context: context, message: "Successfully Login");
+                        }
+
+                    } catch (e) {
+                      if (kDebugMode) {
+                        print(e);
+                      }
+                      Toast.showToast(context: context, message: "Please provide valid information!", isWarning: true);
+                    }
                   }
                   if (kDebugMode) {
                     print("SignUp Button Working. $isName $isConfirmPassword $isPhone  $isEmail $isPassword");
@@ -127,7 +170,7 @@ class _SignUpState extends ConsumerState<SignupScreen> {
               ),
               const SizedBox(height: 8.37),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Row(
                     children: [
@@ -140,7 +183,6 @@ class _SignUpState extends ConsumerState<SignupScreen> {
                       ),
                     ],
                   ),
-                  const Text("Forget Password?", style: TextStyle(fontSize: 12.56, fontWeight: FontWeight.w400)),
                 ],
               ),
               SizedBox(height: 50),

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tech_mart/core/service/auth_service.dart';
 import 'package:tech_mart/feature/dashboard/view/admin/admin_dashboard.dart';
 import 'package:tech_mart/feature/dashboard/view/user/user_dashboard.dart';
 import '../../../../core/extensions/image_path.dart';
@@ -73,29 +74,40 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
               const SizedBox(height: 26.73),
               GestureDetector(
-                onTap: () {
+                onTap: () async {
                   ref.read(loginProvider.notifier).updateStatus(isEmail: true, isPassword: true);
                   if (!isEmail){
                     Toast.showToast(context: context, message: "Invalid Email Address!", isWarning: true);
                   } else if (!isPassword){
                     Toast.showToast(context: context, message: "Invalid Password!", isWarning: true);
                   } else {
-                    if (_email == "admin@gmail.com"){
-                      isAdmin = true;
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => const AdminDashboard(),
-                        ),
-                      );
-                      Toast.showToast(context: context, message: "Successfully Login");
-                    } else if (_email == 'user@gmail.com') {
-                      isAdmin = false;
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => const UserDashboard(),
-                        ),
-                      );
-                      Toast.showToast(context: context, message: "Successfully Login");
+                    try {
+                      final response = await AuthService().signInWIthEmailPassword(_email, _password);
+                      if (kDebugMode) {
+                        print(response);
+                      }
+                      if (_email == "rc295908@gmail.com"){
+                        isAdmin = true;
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => const AdminDashboard(),
+                          ),
+                        );
+                        Toast.showToast(context: context, message: "Successfully Login");
+                      } else {
+                        isAdmin = false;
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => const UserDashboard(),
+                          ),
+                        );
+                        Toast.showToast(context: context, message: "Successfully Login");
+                      }
+                    } catch (e) {
+                      Toast.showToast(context: context, message: "e", isWarning: true);
+                      if (kDebugMode) {
+                        print("Login: $e");
+                      }
                     }
                   }
                   if (kDebugMode) {
@@ -112,7 +124,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
               const SizedBox(height: 8.37),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Row(
                     children: [
@@ -125,7 +137,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                     ],
                   ),
-                  const Text("Forget Password?", style: TextStyle(fontSize: 12.56, fontWeight: FontWeight.w400)),
+                  // GestureDetector(
+                  //     onTap: (){
+                  //
+                  //     },
+                  //     child: Text("Forget Password?", style: TextStyle(fontSize: 12.56, fontWeight: FontWeight.w400))
+                  // ),
                 ],
               ),
               SizedBox(height: 40),

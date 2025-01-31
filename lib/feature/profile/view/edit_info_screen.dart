@@ -1,21 +1,21 @@
 import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tech_mart/core/validation/validation.dart';
 import 'package:tech_mart/feature/profile/components/custom_field.dart';
+import 'package:tech_mart/feature/profile/view_model/user_controller.dart';
 import 'package:tech_mart/shared/containers/custom_container.dart';
 import 'package:tech_mart/shared/widget/utils/toast.dart';
 
-class EditInfoScreen extends StatefulWidget {
+class EditInfoScreen extends ConsumerStatefulWidget {
   const EditInfoScreen({super.key});
 
   @override
-  State<EditInfoScreen> createState() => _EditInfoScreenState();
+  ConsumerState<EditInfoScreen> createState() => _EditInfoScreenState();
 }
 
-class _EditInfoScreenState extends State<EditInfoScreen> {
+class _EditInfoScreenState extends ConsumerState<EditInfoScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -44,18 +44,18 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
   void _onAddress(String address, BuildContext context){
     setState(() {
       _address = address;
-      isPhone = Validation.addressValidity(address: address, context: context);
+      isAddress = Validation.addressValidity(address: address, context: context);
     });
   }
+  File? _image;
   void _resetForm(){
     setState(() {
+      _image = null;
       _name = _bio = _phone = _address = "";
       isName = isBio = isPhone = isAddress = false;
       _nameController.clear(); _bioController.clear(); _phoneController.clear(); _addressController.clear();
     });
   }
-
-  File? _image;
 
   // Function to pick an image
   Future<void> _pickImage() async {
@@ -73,6 +73,7 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final status = ref.watch(userProvider);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xffF2F6FB),
@@ -166,7 +167,7 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
               SizedBox(height: 10),
               Center(
                   child: GestureDetector(
-                      onTap: (){
+                      onTap: () async {
                         if (!isName) {
                           Toast.showToast(context: context, message: "invalid Name!", isWarning: true);
                         } else if (!isBio){
@@ -175,12 +176,14 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
                           Toast.showToast(context: context, message: "Invalid Phone Number!", isWarning: true);
                         } else if (!isAddress){
                           Toast.showToast(context: context, message: "Invalid Address!", isWarning: true);
+                        } else if (_image == null) {
+                          Toast.showToast(context: context, message: "Upload an Image!", isWarning: true);
                         } else {
-                          //
+                          bool isUpdated = await ref.read(userProvider.notifier).updateUser(name: _name, phone: _phone, bio: _bio, imgFile: _image, address: _address);
                           _resetForm();
                         }
                       },
-                      child: CustomContainer(fntWeight: FontWeight.w600, fntSize: 16, txt: "Save", containerColor: Color(0xff188273), containerWidth: MediaQuery.of(context).size.width - 40, containerHeight: 45)
+                      child:  CustomContainer(status: status.isLoading? true : false, fntWeight: FontWeight.w600, fntSize: 16, txt: "Save", containerColor: Color(0xff188273), containerWidth: MediaQuery.of(context).size.width - 40, containerHeight: 45)
                   )
               ),
               SizedBox(height: 40),
