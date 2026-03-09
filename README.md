@@ -1,16 +1,25 @@
-# tech_mart
+# TechMart – Mobile E-Commerce Application
 
-A new Flutter project.
+TechMart is a mobile e-commerce application designed to provide a seamless shopping experience for electronic accessories. The platform allows users to browse products, manage their cart, and complete purchases through a secure checkout system.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- User authentication
+- Product browsing and search
+- Shopping cart management
+- Secure checkout system
+- User profile management
+- Admin dashboard for product management (CRUD operations)
 
-A few resources to get you started if this is your first Flutter project:
+## Tech Stack
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- **Flutter** – Mobile app development
+- **Supabase** – Backend services and database
+- **Dart** – Programming language
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Installation
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/asmrayhan1/TechMart.git
